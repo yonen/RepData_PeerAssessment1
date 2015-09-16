@@ -27,7 +27,9 @@ avgStepsPerInterval <- activity[!is.na(activity$steps),] %>%
 ```r
 library(ggplot2)
 
-qplot(steps, data=stepsPerDay, geom="histogram", binwidth = 2000,  ylab = "Number of Days", xlab = "Daily Step Count", main = "Daily step count")
+qplot(steps, data=stepsPerDay, geom="histogram", binwidth = 2000,  
+	  ylab = "Number of Days", xlab = "Daily Step Count", 
+	  main = "Daily step count")
 ```
 
 ![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
@@ -55,7 +57,9 @@ median(stepsPerDay$steps)
 ## What is the average daily activity pattern?
 
 ```r
-qplot(interval, avgSteps, data=avgStepsPerInterval, geom = "line", ylab="Average Number of Steps", xlab = "5-Minute Interval", main = "Average Steps per Interval")
+qplot(interval, avgSteps, data=avgStepsPerInterval, geom = "line", 
+	  ylab="Average Number of Steps", xlab = "5-Minute Interval", 
+	  main = "Average Steps per Interval")
 ```
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
@@ -83,7 +87,7 @@ sum(is.na(activity$steps))
 ## [1] 2304
 ```
 
-#### Filling the missing data with the average value for that interval
+#### Filling the missing data with the average value across all days for that interval
 
 ```r
 activity2 <- left_join(activity, avgStepsPerInterval, by = 'interval') %>% 
@@ -105,11 +109,12 @@ head(activity2)
 
 #### What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-
 ```r
 stepsPerDay2 <- activity2 %>% group_by(date) %>% summarise(steps = sum(steps))
 
-qplot(steps, data=stepsPerDay2, geom="histogram", binwidth = 2000,  ylab = "Number of Days", xlab = "Daily Step Count", main = "Daily step count after replacing NA values")
+qplot(steps, data=stepsPerDay2, geom="histogram", binwidth = 2000,  
+	  ylab = "Number of Days", xlab = "Daily Step Count", 
+	  main = "Daily step count after replacing NA values")
 ```
 
 ![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
@@ -139,11 +144,15 @@ Because we used the mean to fill the NA values the number of days around the mea
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ```r
-activity3 <- activity %>% mutate(day = as.factor(ifelse(weekdays(date) %in% c("Saturday", "Sunday"), "Weekend", "Weekday")))
+activity3 <- activity %>% 
+	mutate(day = as.factor(ifelse(weekdays(date) %in% c("Saturday", "Sunday"), "Weekend", "Weekday")))
+
 avgStepsPerIntervalPerDaytype <- activity3[!is.na(activity3$steps),] %>% 
     group_by(day, interval) %>% summarise(avgSteps = mean(steps))
 
-qplot(interval, avgSteps, data=avgStepsPerIntervalPerDaytype, geom = "line", ylab="Average Number of Steps", xlab = "5-Minute Interval", main = "Average Steps per Interval") + facet_grid(day ~ .)
+qplot(interval, avgSteps, data=avgStepsPerIntervalPerDaytype, geom = "line", 
+	  ylab="Average Number of Steps", xlab = "5-Minute Interval", 
+	  main = "Average Steps per Interval") + facet_grid(day ~ .)
 ```
 
 ![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
